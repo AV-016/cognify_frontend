@@ -1,134 +1,131 @@
-import axios from 'axios';
+const BASE_URL = "https://cognify-production-e407.up.railway.app";
 
-const BASE_URL = 'https://cognify-production-e407.up.railway.app';
+const getToken = () => localStorage.getItem("cognify_token");
 
-export const apiClient = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+const headers = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${getToken()}`
 });
 
-// Request Interceptor: Attach Token
-apiClient.interceptors.request.use((config) => {
-    if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('cognify_token');
-        if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-    }
-    return config;
-}, (error) => Promise.reject(error));
+// AUTH
+export const login = async (email: string, password: string) => {
+  const res = await fetch(`${BASE_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+  return res.json();
+};
 
-// Response Interceptor: Handle 401 Unauthorized
-apiClient.interceptors.response.use((response) => response, (error) => {
-    if (error.response && error.response.status === 401) {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('cognify_token');
-            localStorage.removeItem('cognify_user');
-            window.location.href = '/login';
-        }
-    }
-    return Promise.reject(error);
-});
+export const register = async (name: string, email: string, password: string, age: number, sex: string) => {
+  const res = await fetch(`${BASE_URL}/api/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password, age, sex })
+  });
+  return res.json();
+};
 
-// Central API Export
-export const api = {
-    // AUTH ROUTES
-    async register(data: any) {
-        const res = await apiClient.post('/api/auth/register', data);
-        return res.data;
-    },
-    async login(email?: string, password?: string) {
-        const res = await apiClient.post('/api/auth/login', { email, password });
-        return res.data;
-    },
-    async forgotPassword(email: string) {
-        const res = await apiClient.post('/api/auth/forgot-password', { email });
-        return res.data;
-    },
-    async resetPassword(token: string, password: string) {
-        const res = await apiClient.post('/api/auth/reset-password', { token, password });
-        return res.data;
-    },
+// HEALTH
+export const getLatestHealth = async () => {
+  const res = await fetch(`${BASE_URL}/api/health/latest`, { headers: headers() });
+  return res.json();
+};
 
-    // USER ROUTES
-    async getMe() {
-        const res = await apiClient.get('/api/user/me');
-        return res.data;
-    },
-    async updateProfile(data: any) {
-        const res = await apiClient.patch('/api/user/me', data);
-        return res.data;
-    },
+export const syncHealth = async (data: any) => {
+  const res = await fetch(`${BASE_URL}/api/health/sync`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+};
 
-    // HEALTH ROUTES
-    async getLatestHealth() {
-        const res = await apiClient.get('/api/health/latest');
-        return res.data;
-    },
-    async syncHealthData(data?: any) {
-        // Keeping it optional parameter in case we just trigger a backend sync, or pass payload
-        const res = await apiClient.post('/api/health/sync', data || {});
-        return res.data;
-    },
-    async getHealthHistory() {
-        // Retaining this for History page if applicable
-        const res = await apiClient.get('/api/health/history');
-        return res.data;
-    },
+export const getHealthHistory = async () => {
+  const res = await fetch(`${BASE_URL}/api/health/history`, { headers: headers() });
+  return res.json();
+};
 
-    // MEDICINE ROUTES
-    async getMedicineReminders() {
-        const res = await apiClient.get('/api/medicine/reminders');
-        return res.data;
-    },
-    async addMedicineReminder(data: { name: string, dosage: string, frequency: string, time: string }) {
-        const res = await apiClient.post('/api/medicine/reminder', data);
-        return res.data;
-    },
-    async updateMedicineStatus(id: string, data: { status: 'TAKEN' | 'MISSED' | 'PENDING', completedAt?: string }) {
-        const res = await apiClient.put(`/api/medicine/reminder/${id}/status`, data);
-        return res.data;
-    },
+// MEDICINE
+export const getMedicineReminders = async () => {
+  const res = await fetch(`${BASE_URL}/api/medicine/reminders`, { headers: headers() });
+  return res.json();
+};
 
-    // EMERGENCY ROUTES
-    async getEmergencyContacts() {
-        const res = await apiClient.get('/api/emergency/contacts');
-        return res.data;
-    },
-    async addEmergencyContact(data: { name: string, phoneNumber: string, relationship: string }) {
-        const res = await apiClient.post('/api/emergency/contact', data);
-        return res.data;
-    },
+export const addMedicineReminder = async (data: any) => {
+  const res = await fetch(`${BASE_URL}/api/medicine/reminder`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+};
 
-    // GAMES/EXERCISES ROUTES
-    async getDailyExercises() {
-        const res = await apiClient.get('/api/v1/exercises/daily');
-        return res.data;
-    },
-    async getExerciseDetails(id: string) {
-        const res = await apiClient.get(`/api/v1/exercises/${id}`);
-        return res.data;
-    },
-    async submitExerciseResult(data: { exerciseId: string, score: number }) {
-        const res = await apiClient.post('/api/v1/exercises/submit', data);
-        return res.data;
-    },
+export const updateMedicineStatus = async (id: string, status: string) => {
+  const res = await fetch(`${BASE_URL}/api/medicine/reminder/${id}/status`, {
+    method: "PUT",
+    headers: headers(),
+    body: JSON.stringify({ status, completedAt: new Date().toISOString() })
+  });
+  return res.json();
+};
 
-    // CAREGIVER ROUTES
-    async getCaregiverPatients() {
-        const res = await apiClient.get('/api/caregiver/patients');
-        return res.data;
-    },
-    async addCaregiver(data: {
-        name: string;
-        email: string;
-        specialty: string;
-        phoneNumber: string;
-        hospitalName: string;
-    }) {
-        const res = await apiClient.post('/api/caregiver/add', data);
-        return res.data;
-    }
+// EMERGENCY CONTACTS
+export const getEmergencyContacts = async () => {
+  const res = await fetch(`${BASE_URL}/api/emergency/contacts`, { headers: headers() });
+  return res.json();
+};
+
+export const addEmergencyContact = async (data: any) => {
+  const res = await fetch(`${BASE_URL}/api/emergency/contact`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+};
+
+// CAREGIVERS
+export const getCareProviders = async () => {
+  const res = await fetch(`${BASE_URL}/api/caregiver/patients`, { headers: headers() });
+  return res.json();
+};
+
+export const addCareProvider = async (data: any) => {
+  const res = await fetch(`${BASE_URL}/api/caregiver/add`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
+};
+
+// EXERCISES
+export const getDailyExercises = async () => {
+  const res = await fetch(`${BASE_URL}/api/v1/exercises/daily`, { headers: headers() });
+  return res.json();
+};
+
+export const submitExercise = async (exerciseId: string, score: number) => {
+  const res = await fetch(`${BASE_URL}/api/v1/exercises/submit`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({ exerciseId, score })
+  });
+  return res.json();
+};
+
+// USER
+export const getUser = async () => {
+  const res = await fetch(`${BASE_URL}/api/user/me`, { headers: headers() });
+  return res.json();
+};
+
+export const updateUser = async (data: any) => {
+  const res = await fetch(`${BASE_URL}/api/user/me`, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify(data)
+  });
+  return res.json();
 };
