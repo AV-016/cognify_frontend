@@ -51,7 +51,6 @@ export default function Dashboard() {
 
         const loadInitialData = async () => {
             try {
-                // Fetch Latest Health
                 const latestRes = await api.getLatestHealth();
                 const health = latestRes?.data;
                 if (health) {
@@ -68,7 +67,6 @@ export default function Dashboard() {
                     });
                 }
 
-                // Fetch History
                 const historyRes = await api.getHealthHistory();
                 if (historyRes?.data && historyRes.data.length > 0) {
                     setHistoryData(historyRes.data);
@@ -101,7 +99,7 @@ export default function Dashboard() {
                 cognitivePerformance: { reactionTimeMs: 250, memoryScore: 80, testType: "daily" }
             };
 
-            const res = await api.syncHealthData(payload);
+            const res = await api.syncHealth(payload);
             if (res?.data) {
                 setPrediction({
                     cognitiveIndex: res.data.cognitiveIndex,
@@ -139,7 +137,6 @@ export default function Dashboard() {
     const currentDateStr = currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     const currentTimeStr = currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-    // Dynamic greeting calculation
     const hour = currentTime.getHours();
     let timeOfDay = 'morning';
     if (hour >= 12 && hour < 17) {
@@ -166,18 +163,31 @@ export default function Dashboard() {
                     <SyncButton onSync={handleSync} isLoading={loading} />
                 </div>
             </div>
-           <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 mb-6 text-center">
-  <p className="text-sm text-blue-700 font-medium">
-    For using our services efficiently, please use our App and follow guidelines as provided.{" "}
-    <a 
-      href="https://drive.google.com/file/d/1SGGGEbRJavYyf7G2fLumf3FI6o3aOwj4/view?usp=sharing" 
-      target="_blank"
-      className="underline font-bold hover:text-blue-900"
-    >
-      Download App
-    </a>
-  </p>
-</div>
+
+            {/* Info Banner */}
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 mb-6 text-center">
+                <p className="text-sm text-blue-700 font-medium mb-2">
+                    For using our services efficiently, please use our App and follow guidelines as provided.
+                </p>
+                <div className="flex items-center justify-center gap-3">
+                    <a
+                        href="https://drive.google.com/file/d/1SGGGEbRJavYyf7G2fLumf3FI6o3aOwj4/view?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition-all"
+                    >
+                        Download App
+                    </a>
+                    <a
+                        href="https://drive.google.com/file/d/1VdWQ_40uyd7HFCQ8lfOjMesmlf0cs-dZ/view?usp=sharing"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="bg-white text-blue-600 border border-blue-300 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-50 transition-all"
+                    >
+                        Download Guidelines
+                    </a>
+                </div>
+            </div>
 
             {/* Health Metrics Row */}
             <div className="grid grid-cols-4 gap-4 mb-6">
