@@ -166,9 +166,16 @@ export default function Dashboard() {
                     <SyncButton onSync={handleSync} isLoading={loading} />
                 </div>
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 mb-6 text-center">
+           <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 mb-6 text-center">
   <p className="text-sm text-blue-700 font-medium">
-    For using our services correctly, please use our App and follow guidelines as provided.
+    For using our services efficiently, please use our App and follow guidelines as provided.{" "}
+    <a 
+      href="https://drive.google.com/file/d/1SGGGEbRJavYyf7G2fLumf3FI6o3aOwj4/view?usp=sharing" 
+      target="_blank"
+      className="underline font-bold hover:text-blue-900"
+    >
+      Download App
+    </a>
   </p>
 </div>
 
