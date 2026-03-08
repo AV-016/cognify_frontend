@@ -169,25 +169,7 @@ export default function Dashboard() {
                 <p className="text-sm text-blue-700 font-medium mb-2">
                     For using our services efficiently, please use our App and follow guidelines as provided.
                 </p>
-                <div className="flex items-center justify-center gap-3">
-                    <a
-                        href="https://drive.google.com/file/d/1SGGGEbRJavYyf7G2fLumf3FI6o3aOwj4/view?usp=sharing"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="bg-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-700 transition-all"
-                    >
-                        Download App
-                    </a>
-                    <a
-                        href="https://drive.google.com/file/d/1VdWQ_40uyd7HFCQ8lfOjMesmlf0cs-dZ/view?usp=sharing"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="bg-white text-blue-600 border border-blue-300 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-50 transition-all"
-                    >
-                        Download Guidelines
-                    </a>
-                </div>
-            </div>
+
 
             {/* Health Metrics Row */}
             <div className="grid grid-cols-4 gap-4 mb-6">
