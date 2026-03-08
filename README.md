@@ -264,5 +264,3 @@ MIT License - Feel free to use for personal and commercial projects.
 ---
 
 **Cognify** - Empowering Healthier Lives Through Technology
-# cognify_frontend
-# cognify_frontend
