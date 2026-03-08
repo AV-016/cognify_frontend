@@ -166,6 +166,11 @@ export default function Dashboard() {
                     <SyncButton onSync={handleSync} isLoading={loading} />
                 </div>
             </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl px-6 py-3 mb-6 text-center">
+  <p className="text-sm text-blue-700 font-medium">
+    For using our services correctly, please use our App and follow guidelines as provided.
+  </p>
+</div>
 
             {/* Health Metrics Row */}
             <div className="grid grid-cols-4 gap-4 mb-6">
