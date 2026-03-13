@@ -1,4 +1,4 @@
-const BASE_URL = "cognify-production-e407.up.railway.app";
+const BASE_URL = "https://cognify-production-e407.up.railway.app";
 
 const getToken = () => localStorage.getItem("cognify_token");
 
